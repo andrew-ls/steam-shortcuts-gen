@@ -4,6 +4,7 @@
 # This file is part of steam-shortcuts-gen.
 #
 # Copyright (c) 2018 Corporal Quesadilla
+# Modifications (c) 2019 Andrew Steel <copyright@andrewsteel.net>
 #
 # SPDX-License-Identifier: GPL-3.0-only
 #
@@ -52,7 +53,8 @@ def findLastEntryNumberAndPosition (pathToShortcutsVDF):
     foundChars = 1
     target = '\x00\x01appname'
     lookingfor = 'target'
-    lastEntryNumber = ''
+    lastEntryNumber = 0
+    lastEntryPosition = 0
 
     f = open(str(pathToShortcutsVDF), 'r')
     fileContents = f.read()
