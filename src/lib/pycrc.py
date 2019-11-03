@@ -30,18 +30,14 @@
 
 
 """
-CRC algorithms implemented in Python.
-If you want to study the Python implementation of the CRC routines, then this
-is a good place to start from.
-
-The algorithms Bit by Bit, Bit by Bit Fast and Table-Driven are implemented.
+CRC Bit by Bit algorithm implemented in Python.
 
 This module can also be used as a library from within Python.
 
 Examples
 ========
 
-This is an example use of the different algorithms:
+This is an example use of the algorithm:
 
 >>> from pycrc import Crc
 >>>
@@ -49,8 +45,6 @@ This is an example use of the different algorithms:
 ...           reflect_in = True, xor_in = 0x0000,
 ...           reflect_out = True, xor_out = 0x0000)
 >>> print("0x%x" % crc.bit_by_bit("123456789"))
->>> print("0x%x" % crc.bit_by_bit_fast("123456789"))
->>> print("0x%x" % crc.table_driven("123456789"))
 """
 
 # Class Crc
@@ -151,85 +145,6 @@ class Crc (object):
             register = ((register << 1) & self.Mask)
             if topbit:
                 register ^= self.Poly
-
-        if self.ReflectOut:
-            register = self.reflect(register, self.Width)
-        return register ^ self.XorOut
-
-
-    # function bit_by_bit_fast
-    ###############################################################################
-    def bit_by_bit_fast (self, in_str):
-        """
-        This is a slightly modified version of the bit-by-bit algorithm: it
-        does not need to loop over the augmented bits, i.e. the Width 0-bits
-        wich are appended to the input message in the bit-by-bit algorithm.
-        """
-        register = self.DirectInit
-        for c in in_str:
-            octet = ord(c)
-            if self.ReflectIn:
-                octet = self.reflect(octet, 8)
-            for i in range(8):
-                topbit = register & self.MSB_Mask
-                if octet & (0x80 >> i):
-                    topbit ^= self.MSB_Mask
-                register <<= 1
-                if topbit:
-                    register ^= self.Poly
-            register &= self.Mask
-        if self.ReflectOut:
-            register = self.reflect(register, self.Width)
-        return register ^ self.XorOut
-
-
-    # function gen_table
-    ###############################################################################
-    def gen_table (self):
-        """
-        This function generates the CRC table used for the table_driven CRC
-        algorithm.  The Python version cannot handle tables of an index width
-        other than 8.  See the generated C code for tables with different sizes
-        instead.
-        """
-        table_length = 1 << self.TableIdxWidth
-        tbl = [0] * table_length
-        for i in range(table_length):
-            register = i
-            if self.ReflectIn:
-                register = self.reflect(register, self.TableIdxWidth)
-            register = register << (self.Width - self.TableIdxWidth + self.CrcShift)
-            for j in range(self.TableIdxWidth):
-                if register & (self.MSB_Mask << self.CrcShift) != 0:
-                    register = (register << 1) ^ (self.Poly << self.CrcShift)
-                else:
-                    register = (register << 1)
-            if self.ReflectIn:
-                register = self.reflect(register >> self.CrcShift, self.Width) << self.CrcShift
-            tbl[i] = register & (self.Mask << self.CrcShift)
-        return tbl
-
-
-    # function table_driven
-    ###############################################################################
-    def table_driven (self, in_str):
-        """
-        The Standard table_driven CRC algorithm.
-        """
-        tbl = self.gen_table()
-
-        register = self.DirectInit << self.CrcShift
-        if not self.ReflectIn:
-            for c in in_str:
-                tblidx = ((register >> (self.Width - self.TableIdxWidth + self.CrcShift)) ^ ord(c)) & 0xff
-                register = ((register << (self.TableIdxWidth - self.CrcShift)) ^ tbl[tblidx]) & (self.Mask << self.CrcShift)
-            register = register >> self.CrcShift
-        else:
-            register = self.reflect(register, self.Width + self.CrcShift) << self.CrcShift
-            for c in in_str:
-                tblidx = ((register >> self.CrcShift) ^ ord(c)) & 0xff
-                register = ((register >> self.TableIdxWidth) ^ tbl[tblidx]) & (self.Mask << self.CrcShift)
-            register = self.reflect(register, self.Width + self.CrcShift) & self.Mask
 
         if self.ReflectOut:
             register = self.reflect(register, self.Width)
