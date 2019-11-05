@@ -52,4 +52,4 @@ def filename_for_shortcut (name, target):
     input_string = ''.join([target,name])
     top_32 = algorithm.bit_by_bit(input_string) | 0x80000000
     full_64 = (top_32 << 32) | 0x02000000
-    print str(full_64)
+    return str(full_64)
