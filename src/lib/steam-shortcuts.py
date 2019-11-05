@@ -46,7 +46,7 @@
 # python2 steam-shortcuts.py "${HOME}/.local/share/Steam/userdata/ID_HERE/config/shortcuts.vdf" WoohooMyProgramWorks /usr/bin/game /usr/bin /usr/share/icons/hicolor/64x64/apps/game.png "" "-config default.cfg" 0 1 1 0 0 "tag (1)" "tag (2)"
 
 import sys
-from steam import filename_for_shortcut
+from steam import get_shortcut_appid
 
 def findLastEntryNumberAndPosition (pathToShortcutsVDF):
     # From the end, search backwards to the beginning of the last entry to get it's ID
@@ -189,7 +189,7 @@ def inputPreperation (args, lastEntryInfo):
     return (var_entryID, var_appName, var_unquotedPath, var_startDir, var_iconPath, var_shortcutPath, var_launchOptions, var_isHidden, var_allowDeskConf, var_allowOverlay, var_openVR, var_lastPlayTime, var_tags)
 
 def getURL (inputTuple):
-    return filename_for_shortcut(inputTuple[2], inputTuple[1])
+    return get_shortcut_appid(inputTuple[2], inputTuple[1])
 
 def main ():
     pathToShortcutsVDF = sys.argv[1]

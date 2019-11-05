@@ -30,7 +30,7 @@
 
 from pycrc import Crc
 
-def filename_for_shortcut (name, target):
+def get_shortcut_appid (name, target):
     """
     Calculates the filename for a given shortcut. This filename is a 64bit
     integer, where the first 32bits are a CRC32 based off of the name and
