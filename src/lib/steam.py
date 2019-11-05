@@ -4,6 +4,7 @@
 # This file is part of steam-shortcuts-gen.
 #
 # Copyright (c) 2012, 2013 Scott Rice
+# Modifications (c) 2019 Andrew Steel <copyright@andrewsteel.net>
 #
 # SPDX-License-Identifier: MIT
 #
@@ -30,7 +31,7 @@
 
 from pycrc import Crc
 
-def get_shortcut_appid (name, target):
+def __get_shortcut_id (name, target, shortid = False):
     """
     Calculates the filename for a given shortcut. This filename is a 64bit
     integer, where the first 32bits are a CRC32 based off of the name and
@@ -52,4 +53,13 @@ def get_shortcut_appid (name, target):
     input_string = ''.join([target,name])
     top_32 = algorithm.bit_by_bit(input_string) | 0x80000000
     full_64 = (top_32 << 32) | 0x02000000
-    return str(full_64)
+    if shortid:
+        return str(top_32)
+    else:
+        return str(full_64)
+
+def get_shortcut_appid (name, target):
+    return __get_shortcut_id(name, target)
+
+def get_shortcut_shortid (name, target):
+    return __get_shortcut_id(name, target, True)
