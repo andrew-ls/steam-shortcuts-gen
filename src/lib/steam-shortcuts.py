@@ -149,12 +149,12 @@ def inputPreperation (args, lastEntryInfo):
     var_entryID = str(int(lastEntryInfo[0])+1)
 
     # Strings
-    var_appName         =       args[2]
-    var_unquotedPath    = '"' + args[3] + '"'
-    var_startDir        = '"' + args[4] + '"'
-    var_iconPath        = '"' + args[5] + '"'
-    var_shortcutPath    = '"' + args[6] + '"' # quoted? what is this?
-    var_launchOptions   =       args[7]
+    var_appName         = args[2]
+    var_unquotedPath    = args[3]
+    var_startDir        = args[4]
+    var_iconPath        = args[5]
+    var_shortcutPath    = args[6] # what is this?
+    var_launchOptions   = args[7]
 
     # Boolean checks
     if args[8] == '1':
